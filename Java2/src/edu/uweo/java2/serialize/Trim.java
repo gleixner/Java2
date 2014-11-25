@@ -14,8 +14,10 @@ import edu.uweo.java2.homework.serialize.SerializableObject;
 public class Trim {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		String input = "C:\\Users\\chq-jamesgl\\git\\Java2\\Java2\\resources\\to_trim.ser";
-		String output = "C:\\Users\\chq-jamesgl\\git\\Java2\\Java2\\resources\\to_trimmed.ser";
+	       System.out.println("Working Directory = " +
+	               System.getProperty("user.dir"));
+		String input = "C:\\Users\\TynPeddler\\git\\Java2\\Java2\\resources\\to_trim.ser";
+		String output = "C:\\Users\\TynPeddler\\git\\Java2\\Java2\\resources\\trimmed.ser";
 		Trim trm = new Trim( input, output );
 		trm.process();
 	}
@@ -44,6 +46,7 @@ public class Trim {
 		try(ObjectInputStream in = new ObjectInputStream( new FileInputStream( input )) ) {
 			list  = ( List<SerializableObject> ) in.readObject();
 			toTrim = ( List<Integer> ) in.readObject();
+			Collections.sort( toTrim );
 		}
 	}
 
