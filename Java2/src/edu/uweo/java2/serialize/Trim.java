@@ -24,13 +24,12 @@ public class Trim {
 		String input = null;
 		if( info == JFileChooser.APPROVE_OPTION ) {
 			input = fc.getSelectedFile().getAbsolutePath();
-			System.out.println( input );
-			System.out.println( fc.getSelectedFile().getPath() );
 		} else {
 			throw new IllegalArgumentException( "incorrect file chosen" );
 		}
 //		String input = "resources/to_trim.ser";
-		String output = "resources/trimmed.ser";
+//		String output = "resources/trimmed.ser";
+		String output = fc.getSelectedFile().getParent() + "/trimmed.ser";
 		Trim trm = new Trim( input, output );
 		trm.process();
 	}
