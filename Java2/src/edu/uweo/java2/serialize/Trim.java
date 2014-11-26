@@ -1,5 +1,6 @@
 package edu.uweo.java2.serialize;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,15 +10,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+
 import edu.uweo.java2.homework.serialize.SerializableObject;
 
 public class Trim {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-	       System.out.println("Working Directory = " +
-	               System.getProperty("user.dir"));
-		String input = "C:\\Users\\TynPeddler\\git\\Java2\\Java2\\resources\\to_trim.ser";
-		String output = "C:\\Users\\TynPeddler\\git\\Java2\\Java2\\resources\\trimmed.ser";
+//	       System.out.println("Working Directory = " +
+//	               System.getProperty("user.dir"));
+		JFileChooser fc = new JFileChooser( new File( System.getProperty( "user.dir") ) );
+		int info = fc.showOpenDialog( null );
+		String input = null;
+		if( info == JFileChooser.APPROVE_OPTION ) {
+			input = fc.getSelectedFile().getAbsolutePath();
+			System.out.println( input );
+			System.out.println( fc.getSelectedFile().getPath() );
+		} else {
+			throw new IllegalArgumentException( "incorrect file chosen" );
+		}
+//		String input = "resources/to_trim.ser";
+		String output = "resources/trimmed.ser";
 		Trim trm = new Trim( input, output );
 		trm.process();
 	}
