@@ -17,8 +17,6 @@ import edu.uweo.java2.homework.serialize.SerializableObject;
 public class Trim {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-//	       System.out.println("Working Directory = " +
-//	               System.getProperty("user.dir"));
 		JFileChooser fc = new JFileChooser( new File( System.getProperty( "user.dir") ) );
 		int info = fc.showOpenDialog( null );
 		String input = null;
@@ -27,8 +25,6 @@ public class Trim {
 		} else {
 			throw new IllegalArgumentException( "incorrect file chosen" );
 		}
-//		String input = "resources/to_trim.ser";
-//		String output = "resources/trimmed.ser";
 		String output = fc.getSelectedFile().getParent() + "/trimmed.ser";
 		Trim trm = new Trim( input, output );
 		trm.process();
