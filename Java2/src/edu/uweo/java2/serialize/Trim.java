@@ -55,13 +55,19 @@ public class Trim {
 			list  = ( List<SerializableObject> ) in.readObject();
 			toTrim = ( List<Integer> ) in.readObject();
 			Collections.sort( toTrim );
+		} catch ( IOException ex ) {
+			throw new IOException( "Error opening file" );
+		} catch ( ClassNotFoundException ex ) {
+			throw new ClassNotFoundException( "Extracted class does not match cast" );
 		}
 	}
 
-	private void serializeObject() throws IOException, ClassNotFoundException {
+	private void serializeObject() throws IOException {
 		try( ObjectOutputStream out = 
 				new ObjectOutputStream( new FileOutputStream( output ) ) ) {
 			out.writeObject( outputList );
+		} catch ( IOException ex ) {
+			throw new IOException( "Error opening file" );
 		}
 	}
 
