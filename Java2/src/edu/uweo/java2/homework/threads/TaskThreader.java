@@ -9,7 +9,6 @@ package edu.uweo.java2.homework.threads;
 public class TaskThreader {
 	
 	private static Thread[] Threads;
-	private Thread dispatch;
 	private static volatile boolean terminate = false;
 
 	/**
@@ -24,13 +23,16 @@ public class TaskThreader {
 		}
 	}
 	
-	public void Process() {
-		dispatch = new Thread( new TaskDispatcher() );
-		dispatch.start();
-	}
-	
-	public Thread[] getThreads() {
-		return Threads;
+	public void process() {
+		for( Thread thr : Threads ) {
+			thr.start();
+		}
+		 TaskGenerator.waitForShutdown();
+		 terminate = true;
+		 for(Thread thr : Threads ) {
+			 thr.interrupt(); 
+		 }
+		 System.out.println( "###SHUTTING DOWN###" );
 	}
 	
 	/**
@@ -63,23 +65,5 @@ public class TaskThreader {
 			}
 						
 		}
-	}
-	
-	/**
-	 * Dispatch TaskRappers from this thread, that way this thread can block
-	 * @author chq-jamesgl
-	 *
-	 */
-	private static class TaskDispatcher implements Runnable {
-		
-		public void run() {
-			for( Thread thr : Threads ) {
-				thr.start();
-			}
-			 TaskGenerator.waitForShutdown();
-			 terminate = true;
-			 System.out.println( "###SHUTTING DOWN###" );
-		}
-		
 	}
 }

@@ -2,19 +2,35 @@ package edu.uweo.java2.homework.threads;
 
 public class TaskThreaderTest {
 
+	private static int ThreadCount;
+	
 	public static void main(String[] args) {
-		int ThreadCount = 5;
-		TaskThreader threader = new TaskThreader( ThreadCount );
-		threader.Process();
-		Thread[] threadList = threader.getThreads();
-		Thread interrupter = threadList[ ThreadCount - 2 ];
-		interrupter.interrupt();
+		ThreadCount = 3;
+		
+		Thread runner = new Thread( new RunnableTaskThreader() );
+		runner.start();
+		
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		TaskGenerator.initiateShutdown();
+		try {
+			runner.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println( "Main has finished" );
+	}
+	
+	private static class RunnableTaskThreader implements Runnable {
+		public void run() {
+			TaskThreader taskThreader = new TaskThreader( ThreadCount );
+			 taskThreader.process();
+		}
 	}
 
 }
