@@ -10,6 +10,7 @@ public class TaskThreader {
 	
 	private static Thread[] Threads;
 	private Thread dispatch;
+	private static volatile boolean terminate = false;
 
 	/**
 	 * Creates and array of threads where each one contains a TaskRapper
@@ -42,20 +43,34 @@ public class TaskThreader {
 		private Task cTask;
 
 		public void run() {
-			cTask = TaskGenerator.nextTask();
-			
-			if( Thread.interrupted() ) {
-				System.out.println( "thread has been interrupted" );
-			}
-			
-			if( !Thread.interrupted() ) {
+			while( !terminate ) {
+				System.out.println( "***Getting Task***" );
+				cTask = TaskGenerator.nextTask();
+
+				if( terminate ) {
+					System.out.println( "thread" + cTask.getIdent() + " has been interrupted" );
+					break;
+				}
+
 				try {
-					System.out.println( "Executing thread ");
+					System.out.println( "EXECUTING " + cTask );
 					cTask.execute();
+					System.out.println( "FINISHED " + cTask );
 				} catch (IllegalTaskStateException e) {
 					e.printStackTrace();
 				}
 			}
+			System.out.println( "***Getting Task***" );
+			cTask = TaskGenerator.nextTask();
+
+			try {
+				System.out.println( "EXECUTING " + cTask );
+				cTask.execute();
+				System.out.println( "FINISHED " + cTask );
+			} catch (IllegalTaskStateException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
@@ -71,7 +86,9 @@ public class TaskThreader {
 				thr.start();
 			}
 			 TaskGenerator.waitForShutdown();
-			 System.out.println( "shutting down");
+			 terminate = true;
+			 System.out.println( "###SHUTTING DOWN###" );
 		}
+		
 	}
 }
