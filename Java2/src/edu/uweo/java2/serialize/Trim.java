@@ -50,16 +50,25 @@ public class Trim {
 		serializeObject();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void deserializeObjects() throws IOException, ClassNotFoundException {
 		try(ObjectInputStream in = new ObjectInputStream( new FileInputStream( input )) ) {
-			list  = ( List<SerializableObject> ) in.readObject();
-			toTrim = ( List<Integer> ) in.readObject();
-			Collections.sort( toTrim );
+			Object tmp = in.readObject();
+			if( tmp instanceof List<?> ) {
+				List<?> tmp2 = ( List<?> ) tmp;
+				if( !(tmp2.length() > 0) ) {
+					throw new IOException( " Serialized object does not contain data" );
+				}
+				list  = ( List<SerializableObject> ) in.readObject();
+				toTrim = ( List<Integer> ) in.readObject();
+				Collections.sort( toTrim );
+			}
 		} catch ( IOException ex ) {
 			throw new IOException( "Error opening file" );
 		} catch ( ClassNotFoundException ex ) {
 			throw new ClassNotFoundException( "Extracted class does not match cast" );
 		}
+
 	}
 
 	private void serializeObject() throws IOException {

@@ -58,19 +58,10 @@ public class TaskThreader {
 					System.out.println( "FINISHED " + cTask );
 				} catch (IllegalTaskStateException e) {
 					e.printStackTrace();
+					System.exit(0);
 				}
 			}
-			System.out.println( "***Getting Task***" );
-			cTask = TaskGenerator.nextTask();
-
-			try {
-				System.out.println( "EXECUTING " + cTask );
-				cTask.execute();
-				System.out.println( "FINISHED " + cTask );
-			} catch (IllegalTaskStateException e) {
-				e.printStackTrace();
-			}
-			
+						
 		}
 	}
 	
