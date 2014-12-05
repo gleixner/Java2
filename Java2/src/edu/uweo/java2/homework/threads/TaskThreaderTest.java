@@ -7,7 +7,13 @@ public class TaskThreaderTest {
 	public static void main(String[] args) {
 		ThreadCount = 3;
 		
-		Thread runner = new Thread( new RunnableTaskThreader() );
+		Thread runner = new Thread( new Runnable() {
+			public void run() {
+				TaskThreader taskThreader = new TaskThreader( ThreadCount );
+				 taskThreader.process();
+			}
+			
+		});
 		runner.start();
 		
 		try {
@@ -15,8 +21,8 @@ public class TaskThreaderTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 		TaskGenerator.initiateShutdown();
+		
 		try {
 			runner.join();
 		} catch (InterruptedException e) {
@@ -25,12 +31,4 @@ public class TaskThreaderTest {
 		}
 		System.out.println( "Main has finished" );
 	}
-	
-	private static class RunnableTaskThreader implements Runnable {
-		public void run() {
-			TaskThreader taskThreader = new TaskThreader( ThreadCount );
-			 taskThreader.process();
-		}
-	}
-
 }

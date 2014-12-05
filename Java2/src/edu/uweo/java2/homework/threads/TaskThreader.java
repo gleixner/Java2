@@ -33,6 +33,14 @@ public class TaskThreader {
 			 thr.interrupt(); 
 		 }
 		 System.out.println( "###SHUTTING DOWN###" );
+		 
+		 for( Thread thr: Threads ) {
+			 try {
+				thr.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		 }
 	}
 	
 	/**
