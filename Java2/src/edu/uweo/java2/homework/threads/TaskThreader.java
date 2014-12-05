@@ -12,7 +12,7 @@ public class TaskThreader {
 	private static volatile boolean terminate = false;
 
 	/**
-	 * Creates and array of threads where each one contains a TaskRapper
+	 * Creates an array of threads where each one contains a TaskRapper
 	 * @param numThreads
 	 */
 	public TaskThreader( int numThreads ) {
@@ -32,7 +32,7 @@ public class TaskThreader {
 		 for(Thread thr : Threads ) {
 			 thr.interrupt(); 
 		 }
-		 System.out.println( "###SHUTTING DOWN###" );
+//		 System.out.println( "###SHUTTING DOWN###" );
 		 
 		 for( Thread thr: Threads ) {
 			 try {
@@ -54,24 +54,23 @@ public class TaskThreader {
 
 		public void run() {
 			while( !terminate ) {
-				System.out.println( "***Getting Task***" );
+//				System.out.println( "***Getting Task***" );
 				cTask = TaskGenerator.nextTask();
-
-				if( terminate ) {
-					System.out.println( "thread" + cTask.getIdent() + " has been interrupted" );
+				
+				if( !terminate ) {
+					try {
+//						System.out.println( "EXECUTING " + cTask );
+						cTask.execute();
+//						System.out.println( "FINISHED " + cTask );
+					} catch (IllegalTaskStateException e) {
+						e.printStackTrace();
+						System.exit(0);
+					}
+				} else {
+//					System.out.println( "thread" + cTask.getIdent() + " has been interrupted" );
 					break;
 				}
-
-				try {
-					System.out.println( "EXECUTING " + cTask );
-					cTask.execute();
-					System.out.println( "FINISHED " + cTask );
-				} catch (IllegalTaskStateException e) {
-					e.printStackTrace();
-					System.exit(0);
-				}
 			}
-						
 		}
 	}
 }
