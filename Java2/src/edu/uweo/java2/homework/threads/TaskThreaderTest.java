@@ -7,13 +7,8 @@ public class TaskThreaderTest {
 	public static void main(String[] args) {
 		ThreadCount = 3;
 		
-		Thread runner = new Thread( new Runnable() {
-			public void run() {
-				TaskThreader taskThreader = new TaskThreader( ThreadCount );
-				 taskThreader.process();
-			}
-			
-		});
+		TaskThreader taskThreader = new TaskThreader( ThreadCount );
+		Thread runner = new Thread( taskThreader::process );
 		runner.start();
 		
 		try {

@@ -36,7 +36,7 @@ public class TaskThreader {
 		 
 		 for( Thread thr: Threads ) {
 			 try {
-				thr.join();
+				thr.join(); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -57,7 +57,7 @@ public class TaskThreader {
 //				System.out.println( "***Getting Task***" );
 				cTask = TaskGenerator.nextTask();
 				
-				if( !terminate ) {
+				if( !terminate && !Thread.currentThread().isInterrupted() ) {
 					try {
 //						System.out.println( "EXECUTING " + cTask );
 						cTask.execute();
