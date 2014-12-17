@@ -2,17 +2,16 @@ package edu.uweo.java2.homework.threads;
 
 public class TaskThreaderTest {
 
-	private static int ThreadCount;
 	
 	public static void main(String[] args) {
-		ThreadCount = 3;
+		int ThreadCount = 5000;
 		
 		TaskThreader taskThreader = new TaskThreader( ThreadCount );
 		Thread runner = new Thread( taskThreader::process );
 		runner.start();
 		
 		try {
-			Thread.sleep(500);
+			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -25,5 +24,6 @@ public class TaskThreaderTest {
 			e.printStackTrace();
 		}
 		System.out.println( "Main has finished" );
+		System.out.println( TaskThreader.count );
 	}
 }

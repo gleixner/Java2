@@ -10,6 +10,7 @@ public class TaskThreader {
 	
 	private static Thread[] Threads;
 	private static volatile boolean terminate = false;
+	public static volatile long count = 0;
 
 	/**
 	 * Creates an array of threads where each one contains a TaskRapper
@@ -18,8 +19,10 @@ public class TaskThreader {
 	public TaskThreader( int numThreads ) {
 		Threads = new Thread[ numThreads ];
 		
+		TaskRapper TR = new TaskRapper();
+		
 		for( int i = 0; i < Threads.length; ++i ) {
-			Threads[i] = new Thread(new TaskRapper() );
+			Threads[i] = new Thread(TR );
 		}
 	}
 	
@@ -50,21 +53,20 @@ public class TaskThreader {
 	 */
 	private static class TaskRapper implements Runnable {
 		
-		private Task cTask;
-
 		public void run() {
 			while( !terminate ) {
 //				System.out.println( "***Getting Task***" );
-				cTask = TaskGenerator.nextTask();
+				Task cTask = TaskGenerator.nextTask();
 				
 				if( !terminate && !Thread.currentThread().isInterrupted() ) {
 					try {
 //						System.out.println( "EXECUTING " + cTask );
 						cTask.execute();
 //						System.out.println( "FINISHED " + cTask );
+						count += 1;
 					} catch (IllegalTaskStateException e) {
 						e.printStackTrace();
-						System.exit(0);
+//						System.exit(0);
 					}
 				} else {
 //					System.out.println( "thread" + cTask.getIdent() + " has been interrupted" );
