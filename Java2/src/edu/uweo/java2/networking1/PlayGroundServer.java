@@ -36,13 +36,13 @@ public class PlayGroundServer implements Runnable {
 	private AtomicInteger connectionCount = new AtomicInteger( 0 );
 
 	//BEGIN CONFIGURATION MODULE
-	private static final Map<String, String> DEFAULT_SETTINGS = new HashMap<>();
-	static {
-		DEFAULT_SETTINGS.put("accept-timeout", "500");
-		DEFAULT_SETTINGS.put("active-clients", "4");
-		DEFAULT_SETTINGS.put("client-timeout", "500");
-		DEFAULT_SETTINGS.put("port", "57001");
-		DEFAULT_SETTINGS.put("greeting", "Welcome to the playground.");
+	private Map<String, String> currentSettings = new HashMap<>();
+	{
+		currentSettings.put("accept-timeout", "500");
+		currentSettings.put("active-clients", "4");
+		currentSettings.put("client-timeout", "500");
+		currentSettings.put("port", "57001");
+		currentSettings.put("greeting", "Welcome to the playground.");
 	}
 
 	private final Map<String, Config> CONFIGURATIONS = new HashMap<>();
@@ -60,9 +60,6 @@ public class PlayGroundServer implements Runnable {
 	}
 
 	public PlayGroundServer( Map<String, String> settings ) {
-		HashMap<String, String> currentSettings = new HashMap<>();
-		currentSettings.putAll( DEFAULT_SETTINGS );
-
 		if( settings != null && !settings.isEmpty() ){
 			for( String key : settings.keySet() ) {
 				currentSettings.put( key, settings.get( key ) );
@@ -100,7 +97,6 @@ public class PlayGroundServer implements Runnable {
 
 				try {
 					Socket clientSocket = serverSock.accept();
-					System.out.println( "SERVER: Connection found."  + socketQueue.size() + " clients connected: " + (System.currentTimeMillis() - startTime) );
 					socketQueue.add( clientSocket );
 					connectionCount.incrementAndGet();
 				}
@@ -173,7 +169,6 @@ public class PlayGroundServer implements Runnable {
 		 * Continue doing this until told to stop
 		 */
 		public void run() {
-			System.out.println( "SERVER: client handler is listening" );
 			while( !shutdown && !Thread.currentThread().isInterrupted() ) {
 				try {
 					clientSocket = socketQueue.poll( CLIENT_TIMEOUT, TimeUnit.MILLISECONDS );
@@ -187,7 +182,6 @@ public class PlayGroundServer implements Runnable {
 				catch (InterruptedException e1) {}
 				
 				connectionCount.decrementAndGet();
-				System.out.println( "SERVER: decremented connection count" );
 				try{
 					if( clientSocket != null ){
 						writer.close();
@@ -204,7 +198,6 @@ public class PlayGroundServer implements Runnable {
 		//Wait for enquires from client and respond to them
 		private void handleClient() throws IOException{
 			//Issue greeting
-			System.out.println( "SERVER: client handler has a client" );
 			writer.println( GREETING );
 			String message;
 			while( !shutdown
@@ -216,7 +209,6 @@ public class PlayGroundServer implements Runnable {
 		}
 
 		private boolean process( String message ) {
-			System.out.println( "  SERVER: received message " + message);
 			boolean exit = false;
 			String[] msg = message.split( " " );
 			String cmd = msg[0];
