@@ -100,9 +100,9 @@ public class PlayGroundServer implements Runnable {
 
 				try {
 					Socket clientSocket = serverSock.accept();
+					System.out.println( "SERVER: Connection found."  + socketQueue.size() + " clients connected: " + (System.currentTimeMillis() - startTime) );
 					socketQueue.add( clientSocket );
 					connectionCount.incrementAndGet();
-					System.out.println( "SERVER: Connection found" );
 				}
 				catch( SocketTimeoutException e ) {}
 
@@ -222,8 +222,7 @@ public class PlayGroundServer implements Runnable {
 			String cmd = msg[0];
 			switch (cmd) {
 			case "time":
-				java.util.Calendar cal = new java.util.GregorianCalendar();
-				writer.println( cal.getTime() );
+				writer.println( System.currentTimeMillis() );
 				break;
 			case "echo":
 				writer.println( message.substring( 5) );
@@ -245,6 +244,9 @@ public class PlayGroundServer implements Runnable {
 			case "shutdown":
 				writer.println( "ack" );
 				shutdown();
+				break;
+			default:
+				writer.println( "Uh uh uh, you didn't say the magic word!" );
 				break;
 			}
 			return exit;

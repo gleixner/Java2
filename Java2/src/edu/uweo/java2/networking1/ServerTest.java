@@ -8,11 +8,11 @@ public class ServerTest {
 	public static void main( String[] args ) {
 
 		Map<String, String> testInput = new HashMap<>();
-		//		testInput.put("accept-timeout", "500");
-		testInput.put("active-clients", "2");
+		testInput.put("accept-timeout", "100");
+		testInput.put("active-clients", "4");
 		//		testInput.put("active-connections", "2");
 		//		testInput.put("client-timeout", "500");
-				testInput.put("port", "57001");
+		testInput.put("port", "50000");
 		//		testInput.put("greeting", "This should be different.");
 
 		PlayGroundServer pgs = new PlayGroundServer( testInput );

@@ -76,12 +76,17 @@ public class ClientGenerator {
 				t.join();
 			} catch (InterruptedException e) {}
 		}
-		pgs.shutdown();
+//		pgs.shutdown();
 		System.out.println( "Client Generator has finished" );
 	}
 	
 	private static class Client implements Runnable {
+//		private int serverPort = 43211;
+//		private String serverIP = "192.168.1.146";
+		private String serverIP = "localhost";
 		private int serverPort = 57001;
+
+
 		private Socket sock;
 		BufferedReader reader;
 		PrintWriter writer;
@@ -104,7 +109,7 @@ public class ClientGenerator {
 			for( int i = 0; i < messages.length && !shutdown.get(); ++i ) {
 //				System.out.println( "Running message " + i );
 				try {
-					sock = new Socket("127.0.0.1", serverPort);
+					sock = new Socket( serverIP, serverPort);
 					InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 					reader = new BufferedReader(streamReader);
 					writer = new PrintWriter(sock.getOutputStream());
@@ -169,11 +174,13 @@ public class ClientGenerator {
 				String message;
 				try {
 					while((message = reader.readLine()) !=null) {
-						System.out.println( "client# " + clientNumber + ": " + message);
+						System.out.println("Client#" + clientNumber + ": " + message );
 						if( message.equals( "SERVER SHUTTING DOWN" ) ) {
 							end();
 							break;
-						}
+						} 
+//						else
+//							messageQ.put( message );
 					}
 				} 
 				catch (IOException ex) {
