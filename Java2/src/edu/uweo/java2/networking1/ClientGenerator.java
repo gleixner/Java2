@@ -19,7 +19,6 @@ public class ClientGenerator {
 		settings.put("accept-timeout", "500");
 		settings.put("active-clients", "1");
 		settings.put("port", "57001");
-		settings.put("greeting", "This should be different.");
 		//start server
 		PlayGroundServer pgs = new PlayGroundServer( settings );
 		System.out.println( pgs.getCurrentSettings() );
@@ -175,18 +174,19 @@ public class ClientGenerator {
 				try {
 					while((message = reader.readLine()) !=null) {
 						System.out.println("Client#" + clientNumber + ": " + message );
-						if( message.equals( "SERVER SHUTTING DOWN" ) ) {
-							end();
-							break;
-						} 
+//						if( message.equals( "SERVER SHUTTING DOWN" ) ) {
+//							end();
+//							break;
+//						} 
 //						else
 //							messageQ.put( message );
 					}
 				} 
 				catch (IOException ex) {
 //					ex.printStackTrace();
+					System.out.println("Client#" + clientNumber + ": IOException thrown" );
 				}
-				System.out.println( "Listener is closed" );
+				System.out.println( "Client#" + clientNumber + ": Listener is closed" );
 			}
 
 			private synchronized void end() {

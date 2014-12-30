@@ -86,6 +86,7 @@ public class PlayGroundServer implements Runnable {
 		startTime = System.currentTimeMillis();
 		//Create client handlers and their threads and start them running
 		startClientHandlers();
+		System.out.println( "SERVER: now accepting connections");
 
 		//Listen for client connections, put them in the Queue as they come in
 		try( ServerSocket tmpServer = new ServerSocket( PORT ) ) {
@@ -99,6 +100,7 @@ public class PlayGroundServer implements Runnable {
 					Socket clientSocket = serverSock.accept();
 					socketQueue.add( clientSocket );
 					connectionCount.incrementAndGet();
+					System.out.println( "SERVER: client added to queue");
 				}
 				catch( SocketTimeoutException e ) {}
 
@@ -111,6 +113,7 @@ public class PlayGroundServer implements Runnable {
 		catch (Exception ex) {} 
 
 		//make sure that every client processing thread has finished before exiting.
+		shutdown();
 		joinAllThreads();
 	}
 
@@ -119,7 +122,7 @@ public class PlayGroundServer implements Runnable {
 		for( Thread thr : threadPool ) {
 			try {
 				thr.join();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) { Thread.currentThread().interrupt(); }
 		}
 	}
 
@@ -134,12 +137,15 @@ public class PlayGroundServer implements Runnable {
 	}
 
 	public synchronized void shutdown() {
-		shutdown = true;
-		for( ClientHandler c : handlerPool ) {
-			c.end();
-		}
-		for( Thread t : threadPool ) {
-			t.interrupt();
+		if( !shutdown ) {
+			System.out.println( "SERVER: Shutdown command starting" );
+			shutdown = true;
+			for( ClientHandler c : handlerPool ) {
+				c.end();
+			}
+			for( Thread t : threadPool ) {
+				t.interrupt();
+			}
 		}
 	}
 
@@ -175,11 +181,11 @@ public class PlayGroundServer implements Runnable {
 					if( clientSocket == null ) { continue; }
 					writer = new PrintWriter( clientSocket.getOutputStream(), true);
 					reader = new BufferedReader( new InputStreamReader(clientSocket.getInputStream() ) );
-
+					System.out.println("SERVER( CLIENT_HANDLER ): client accepted");
 					handleClient();
 				} 
 				catch (IOException e) {} 
-				catch (InterruptedException e1) {}
+				catch (InterruptedException e1) { Thread.currentThread().interrupt();}
 				
 				connectionCount.decrementAndGet();
 				try{
@@ -236,9 +242,10 @@ public class PlayGroundServer implements Runnable {
 			case "shutdown":
 				writer.println( "ack" );
 				shutdown();
+				System.out.println("SERVER: shutdown command finished");
 				break;
 			default:
-				writer.println( "Uh uh uh, you didn't say the magic word!" );
+				writer.println( "Nuh uh uh, you didn't say the magic word!" );
 				break;
 			}
 			return exit;
@@ -260,8 +267,15 @@ public class PlayGroundServer implements Runnable {
 			if( clientSocket != null ) {
 				writer.println( "SERVER SHUTTING DOWN" );
 				try {
+					Thread.sleep(200);
 					clientSocket.close();
-				} catch (IOException e) {}
+				} 
+				catch (IOException e) {} 
+				catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		}
 	}
