@@ -209,6 +209,7 @@ public class PlayGroundServer implements Runnable {
 			while( !shutdown
 					&& !Thread.currentThread().isInterrupted()
 					&&( message = reader.readLine() ) != null ) {
+				System.out.println( "SERVER: received message " + message );
 				if( process( message ) )
 					break;
 			}
@@ -267,14 +268,13 @@ public class PlayGroundServer implements Runnable {
 			if( clientSocket != null ) {
 				writer.println( "SERVER SHUTTING DOWN" );
 				try {
-					Thread.sleep(200);
+//					Thread.sleep(200);
 					clientSocket.close();
 				} 
 				catch (IOException e) {} 
-				catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
 				
 			}
 		}
@@ -292,7 +292,7 @@ public class PlayGroundServer implements Runnable {
 	}
 
 	//An overly complicated method to print out the server's settings
-	//A little to complicated by a little self reflection every now and then is good
+	//A little too complicated but a little self reflection every now and then is good
 	public String getCurrentSettings() {
 		StringBuilder sb = new StringBuilder();
 		for( Field fd : this.getClass().getDeclaredFields() ) {

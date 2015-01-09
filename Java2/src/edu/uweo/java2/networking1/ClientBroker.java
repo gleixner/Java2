@@ -28,7 +28,7 @@ public class ClientBroker {
 			server.start();
 
 			ClientBroker cb = new ClientBroker( true );
-			cb.setJobList( ClientBroker.make1ClientShutdownJobs() );
+			cb.setJobList( ClientBroker.make5ClientJobs() );
 			cb.run();
 
 			try {
@@ -102,4 +102,20 @@ public class ClientBroker {
 		result.add( job1 );
 		return result;
 	}
+	
+	public static List< Queue<Command> > make5ClientJobs() {
+		List< Queue<Command> > result = new ArrayList<>();
+		for( int i = 0; i < 4; ++ i ) {
+			LinkedList<Command> job = new LinkedList<>();
+			StartCommand start = new BasicStartupCommand();
+			start.setServerIP( "localhost" );
+			start.setServerPort( 57001 );
+			job.add( start );
+			job.add( new WaitCommand( 1000 ) );
+			job.add( new ShutdownCommand() );
+			result.add( job );
+		}
+		return result;
+	}
+
 }

@@ -57,7 +57,7 @@ public class ClientMaster implements Runnable {
 				c.setLogger( this );
 				boolean exception = false;
 				try {
-				c.execute( cl );
+					c.execute( cl );
 				}
 				catch( Exception e ) {
 					exception = true;
@@ -68,6 +68,14 @@ public class ClientMaster implements Runnable {
 			}
 		}
 		//die gracefully
+		if( !end ) {
+			try {
+				startC.join();
+			} catch (InterruptedException e) {
+				log("client thread experienced InterruptedExceptionn");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public String getLog() {

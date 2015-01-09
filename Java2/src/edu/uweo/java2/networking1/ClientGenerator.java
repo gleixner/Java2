@@ -17,7 +17,7 @@ public class ClientGenerator {
 		//make server settings
 		Map<String, String> settings = new HashMap<>();
 		settings.put("accept-timeout", "500");
-		settings.put("active-clients", "1");
+		settings.put("active-clients", "4");
 		settings.put("port", "57001");
 		//start server
 		PlayGroundServer pgs = new PlayGroundServer( settings );

@@ -14,6 +14,7 @@ class Client implements Runnable {
 	PrintWriter writer;
 	private BufferedReader reader;
 	ClientMaster boss = null;
+	private long startTime;
 
 	//	private int serverPort = 43211;
 	//	private String serverIP = "192.168.1.146";
@@ -58,6 +59,7 @@ class Client implements Runnable {
 		if( serverIP == null || serverPort == 0 ) {
 			throw new RuntimeException( "server or port has not been set");
 		}
+		startTime = System.currentTimeMillis();
 		try ( Socket sockTmp = new Socket( serverIP, serverPort); 
 				InputStreamReader inTmp = new InputStreamReader( sockTmp.getInputStream() );
 				BufferedReader readerTmp = new BufferedReader( inTmp );
@@ -100,5 +102,9 @@ class Client implements Runnable {
 	}
 	public PrintWriter getWriter() {
 		return writer;
+	}
+	
+	public long getStartTime() {
+		return startTime;
 	}
 }

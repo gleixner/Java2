@@ -12,7 +12,7 @@ public class ServerTest {
 		testInput.put("active-clients", "2");
 		//		testInput.put("active-connections", "2");
 		//		testInput.put("client-timeout", "500");
-		testInput.put("port", "50000");
+		testInput.put("port", "57001");
 		//		testInput.put("greeting", "This should be different.");
 
 		PlayGroundServer pgs = new PlayGroundServer( testInput );

@@ -38,12 +38,10 @@ public abstract class Command {
 		String msg = null;
 		Long tm = System.currentTimeMillis();
 		log("( command ) mQ IS: " + mQ);
-		for( int i = 0; i < 10 && msg == null; ++i ) {
-			try {
-				msg = mQ.poll( timeout, TimeUnit.MILLISECONDS );
-			} catch (InterruptedException e) { 
-				Thread.currentThread().interrupt();
-			}
+		try {
+			msg = mQ.poll( timeout, TimeUnit.MILLISECONDS );
+		} catch (InterruptedException e) { 
+			Thread.currentThread().interrupt();
 		}
 		log("( command) Retrieved Message: " + msg);
 		log("( getMessage ) time to run " + (System.currentTimeMillis() - tm ) );
@@ -51,7 +49,7 @@ public abstract class Command {
 	}
 
 	protected String getMessage() {
-		return getMessage( 2000 );
+		return getMessage( 1000 );
 	}
 
 	public boolean success() {
@@ -73,7 +71,8 @@ class ShutdownCommand extends Command {
 		String msg2 = getMessage();
 
 		log("( command ) has messages " + msg1 + " " + msg2);
-		if( msg1.contains( "ack" ) && msg2.contains("SERVER SHUTTING DOWN") ) {
+		if( msg1 != null && msg2 != null 
+				&& msg1.contains( "ack" ) && msg2.contains("SERVER SHUTTING DOWN") ) {
 			success = true;
 //			System.out.println( "in the if statement");
 		}
@@ -174,6 +173,7 @@ class MessageStartupCommand extends StartCommand {
 abstract class StartCommand extends Command{
 	String IP;
 	int port;
+	private Thread t;
 	
 	/**
 	 * Returns true if the IP and port have been set, returns  false otherwise
@@ -186,7 +186,7 @@ abstract class StartCommand extends Command{
 	public void initialize( Client cl ) {
 		cl.setIP( IP );
 		cl.setPort( port );
-		Thread t = new Thread( cl );
+		t = new Thread( cl );
 		t.start();
 	}
 	
@@ -201,5 +201,11 @@ abstract class StartCommand extends Command{
 	}
 	int getServerPort() {
 		return port;
+	}
+	
+	public void join() throws InterruptedException {
+		if( t != null ) {
+			t.join();
+		}
 	}
 }
