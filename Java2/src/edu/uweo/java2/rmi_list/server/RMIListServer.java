@@ -13,10 +13,9 @@ import edu.uweo.java2.rmi_list.interfaces.RMIFilteredList;
 
 public class RMIListServer implements RMIFilteredList, Runnable {
 	
-	boolean debug = true;
-	String regHost = "localhost";
-	int report = 0;
-	String name = "rmi:rmilist";
+	private String regHost = "localhost";
+	private int report = 1099;
+	private static final String NAME = "rmi:rmilist";
 
 	public RMIListServer() {}
 
@@ -30,22 +29,14 @@ public class RMIListServer implements RMIFilteredList, Runnable {
 		Registry registry = null;
 		
 		try {
-			if( debug ) {
-				report = 1099;
-				registry = LocateRegistry.createRegistry( report );
-				System.out.println( "Registry open");
-			} else {
-				registry = LocateRegistry.getRegistry( regHost, report );
-			}
-			RMIFilteredList stub = (RMIFilteredList) UnicastRemoteObject.exportObject( this, report);
-			registry.rebind( name, stub );
-			System.out.println( "Server bound and open for connection");
-			
+			registry = LocateRegistry.getRegistry( regHost, report );
+			RMIFilteredList stub = (RMIFilteredList) UnicastRemoteObject.exportObject( this, 0 );
+			registry.rebind( NAME, stub );
 		}
 		catch( RemoteException e ) {
 			e.printStackTrace();
+			System.exit(1);
 		}
-
 	}
 
 	public <T extends Comparable<?>> List<T> getList(Collection<T> input,
@@ -58,10 +49,4 @@ public class RMIListServer implements RMIFilteredList, Runnable {
 		}
 		return result;
 	}
-	
-	public static void main( String[] args ) {
-		RMIListServer server = new RMIListServer();
-		server.run();
-	}
-
 }
